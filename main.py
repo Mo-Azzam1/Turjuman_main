@@ -141,11 +141,7 @@ except Exception as e:
 
 # --- FastAPI App Setup ---
 
-app = FastAPI(
-    title="English to Arabic Translator API",
-    description="API to translate an English word based on context using Gemini 1.5 Flash.",
-    version="1.0.0"
-)
+app = FastAPI()
 
 # إضافة CORS middleware
 app.add_middleware(
