@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import json_repair
 from langchain_google_genai import ChatGoogleGenerativeAI # استخدام المكتبة الصحيحة لـ Gemini مع Langchain
 import json # لإضافة الـ schema في الـ prompt
-
+import uvicorn
 
 # --- Pydantic Models ---
 
@@ -141,7 +141,8 @@ except Exception as e:
 
 # --- FastAPI App Setup ---
 
-app = FastAPI()
+app = FastAPI(
+)
 
 # إضافة CORS middleware
 app.add_middleware(
@@ -211,7 +212,13 @@ async def translate_word_endpoint(input_data: TranslationInput):
             status_code=500,
             detail=f"An internal error occurred during translation: {e}"
         )
-
+if __name__ == "__main__":
+    # حاول تقرأ البورت من متغير البيئة PORT، لو مش موجود استخدم 8080
+    port = int(os.environ.get("PORT", 8080))
+    # شغل السيرفر باستخدام uvicorn
+    # host="0.0.0.0" مهم جداً عشان Railway يقدر يوصل للتطبيق
+    uvicorn.run(app, host="0.0.0.0", port=port)
+# --- نهاية الجزء المضاف ---
 # ملاحظة: للتشغيل المحلي، ستحتاج إلى تثبيت uvicorn وتشغيل الأمر:
 # uvicorn main:app --reload
 # للتوزيع على Railway، ستحتاج فقط لملف main.py وملف requirements.txt ومتغير البيئة GEMINI_API_KEY
